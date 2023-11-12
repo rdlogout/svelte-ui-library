@@ -1,8 +1,8 @@
 {
 	"name": "@logoutrd/svelte",
-	"version": "0.0.5",
+	"version": "0.0.6",
 	"scripts": {
-		"publish": "npm version patch && git push && git push --tags && npm publish --access public",
+		"publish": "npm version patch --no-git-tag-version && git add package.json && git commit -m \"Bump version\" && git tag v$(node -p -e \"require('./package.json').version\") && git push && git push --tags && npm publish --access public",
 		"dev": "vite dev",
 		"build": "vite build && npm run package",
 		"preview": "vite preview",
