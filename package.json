@@ -1,6 +1,6 @@
 {
 	"name": "@logoutrd/svelte",
-	"version": "0.0.2",
+	"version": "0.0.3",
 	"scripts": {
 		"publish": "npm version patch && git push && git push --tags && npm publish --access public",
 		"dev": "vite dev",
