@@ -1,8 +1,8 @@
 {
 	"name": "@logoutrd/svelte",
-	"version": "0.0.7",
+	"version": "0.0.27",
 	"scripts": {
-		"publish": "npm version patch --no-git-tag-version && git add package.json && git commit -m \"Bump version\" && git tag v$(node -p -e \"require('./package.json').version\") && git push && git push --tags && npm publish --access public",
+		"deploy": "npm run package && npm version patch -git-tag-version false && npm publish --access public",
 		"dev": "vite dev",
 		"build": "vite build && npm run package",
 		"preview": "vite preview",
@@ -26,6 +26,7 @@
 		"svelte": "^4.0.0"
 	},
 	"devDependencies": {
+		"@logoutrd/svelte": "^0.0.15",
 		"@sveltejs/adapter-auto": "^2.0.0",
 		"@sveltejs/kit": "^1.20.4",
 		"@sveltejs/package": "^2.0.0",
@@ -43,7 +44,8 @@
 	"types": "./dist/index.d.ts",
 	"type": "module",
 	"dependencies": {
-		"@logoutrd/svelte": "^0.0.1",
-		"preline": "^2.0.0"
+		"@preline/carousel": "^2.0.0",
+		"preline": "^2.0.0",
+		"tailwind-merge": "^2.0.0"
 	}
 }
