@@ -5,3 +5,7 @@ export { default as Drawer } from "./Modal/Drawer.svelte";
 //form
 export { default as Form } from "./Form/Form.svelte";
 export { default as Input } from "./Form/Input.svelte";
+
+//utilities
+
+export { default as Ratings } from "./Utilities/Ratings.svelte";
