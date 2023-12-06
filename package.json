@@ -1,6 +1,6 @@
 {
 	"name": "@logoutrd/svelte",
-	"version": "0.0.28",
+	"version": "0.0.45",
 	"scripts": {
 		"deploy": "npm run package && npm version patch -git-tag-version false && npm publish --access public",
 		"dev": "vite dev",

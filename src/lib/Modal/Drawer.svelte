@@ -51,15 +51,41 @@
 	on:cancel={(_) => (!closeOnEsc ? _.preventDefault() : null)}
 	on:close={() => (open = false)}
 	use:init={(modal, { open })}
-	in:fade
-	class=" backdrop:bg-black/40 backdrop:backdrop-blur-sm bg-transparent h-full fixed max-h-full w-full max-w-full"
+	in:slide
+	class=" backdrop:bg-black/40 backdrop:backdrop-blur bg-transparent h-full fixed max-h-full w-full max-w-full p-3"
 >
 	<div
 		transition:fly={{ x: 400, easing: circOut }}
-		class={twMerge(`h-full sm:max-w-${size} w-full bg- p-5 z-10 bg-white relative transition-all`, direction === "left" ? "sm:mr-auto" : "sm:ms-auto", _class)}
+		class={twMerge(`h-full sm:max-w-${size} w-full rounded-xl  z-10 bg-white relative transition-all`, direction === "left" ? "sm:mr-auto" : "sm:ms-auto", _class)}
 	>
-		<h3 class="font-bold text-lg">Hello!</h3>
-		<p class="py-4">Press ESC key or click the button below to close</p>
+		<div class="flex h-11 shadow-sm bg-white justify-between items-center px-4 rounded-xl">
+			<p class="text-md font-medium text-[#666] flex-1 w-2/3 truncate">New Consignment</p>
+			<svg
+				xmlns="http://www.w3.org/2000/svg"
+				version="1.1"
+				xmlns:xlink="http://www.w3.org/1999/xlink"
+				x="0"
+				y="0"
+				viewBox="0 0 512 512"
+				style="enable-background:new 0 0 512 512"
+				xml:space="preserve"
+				class="h-3 aspect-square"
+				><g
+					><path
+						d="m292.2 256 109.9-109.9c10-10 10-26.2 0-36.2s-26.2-10-36.2 0L256 219.8 146.1 109.9c-10-10-26.2-10-36.2 0s-10 26.2 0 36.2L219.8 256 109.9 365.9c-10 10-10 26.2 0 36.2 5 5 11.55 7.5 18.1 7.5s13.1-2.5 18.1-7.5L256 292.2l109.9 109.9c5 5 11.55 7.5 18.1 7.5s13.1-2.5 18.1-7.5c10-10 10-26.2 0-36.2z"
+						fill="#000000"
+						opacity="1"
+						data-original="#000000"
+						class=""
+					></path></g
+				></svg
+			>
+		</div>
+
+		<div class="p-5">
+			<h3 class="font-bold text-lg">Hello!</h3>
+			<p class="py-4">Press ESC key or click the button below to close</p>
+		</div>
 	</div>
 
 	{#if closeOnOuterClick}

@@ -1,63 +1,130 @@
 <script lang="ts">
+	import { createDialog } from "@melt-ui/svelte";
+
 	import { page } from "$app/stores";
-	import { goto } from "$app/navigation";
-	import { fade } from "svelte/transition";
+	import { fly } from "svelte/transition";
 	import { twMerge } from "tailwind-merge";
-	let modal: HTMLDialogElement;
+	import { get, writable } from "svelte/store";
+	import { browser } from "$app/environment";
+	import { goto } from "$app/navigation";
+	import { onDestroy, onMount } from "svelte";
+
+	let pageSubscription: any;
+	let storeSubscription: any;
+
 	let _class: string = "";
 
-	export let size: "xs" | "sm" | "md" | "lg" | "xl" = "md";
-	export let closeOnEsc: boolean = true;
-	export let closeOnOuterClick: boolean = true;
+	let _open: boolean = false;
+	let openStore = writable(_open);
+	export let onClose: () => void;
+	export let closeButton: boolean = true;
+	export let drawer: boolean = false;
+	export let placement: "left" | "right" | "top" | "center" = drawer ? "right" : "center";
+	export let size: "xs" | "sm" | "md" | "lg" | "xl" = drawer ? "sm" : "md";
+	export let portal: boolean = false;
+	export let closeOnEscape: boolean = true;
+	export let closeOnOutsideClick: boolean = true;
 	export { _class as class };
-	export let open: boolean = false;
-	export let queryKey: string;
+	export { _open as open };
+	export let triggerClass: string | undefined = undefined;
 
-	const init = (el: HTMLDialogElement) => {
-		modal = el;
-		if (open) modal.showModal();
-		let subscription;
+	export let queryKey: string | undefined = undefined;
 
+	const {
+		elements: { trigger, portalled, overlay, content, title, description, close },
+		states: { open },
+	} = createDialog({
+		open: openStore,
+		closeOnEscape,
+		closeOnOutsideClick,
+		portal: portal ? "body" : undefined,
+	});
+
+	onMount(() => {
 		if (queryKey)
-			subscription = page.subscribe(async (value) => {
-				const hasValue = value.url.searchParams.get(queryKey);
-
-				if (!hasValue && open) open = false;
-
-				if (hasValue && !open) open = true;
+			pageSubscription = page.subscribe((value) => {
+				const is_open = value.url.searchParams.get(queryKey) !== null;
+				if (is_open && !_open) {
+					openStore.set(true);
+				} else if (!is_open && _open) {
+					openStore.set(false);
+				}
 			});
 
-		return {
-			update({ open }) {
-				if (open) modal.showModal();
-				else {
-					modal.close();
-					if (queryKey) $page.url.searchParams.delete(queryKey);
+		storeSubscription = openStore.subscribe((value) => {
+			// sendToApp("modalState", {
+			//   open: value,
+			// });
+			if (!value && onClose) onClose();
+
+			dispatchEvent(
+				new CustomEvent("sendToApp", {
+					detail: {
+						name: "modalState",
+						open: value,
+					},
+				})
+			);
+
+			if (!value) {
+				_open = false;
+				if (browser && $page.url.searchParams.get(queryKey) !== null && queryKey) {
+					$page.url.searchParams.delete(queryKey);
 					goto($page.url.toString());
 				}
-			},
-			destroy: () => {
-				if (subscription) subscription();
-			},
-		};
-	};
+			}
+		});
+	});
+
+	onDestroy(() => {
+		if (pageSubscription) {
+			pageSubscription();
+		}
+		if (storeSubscription) storeSubscription();
+	});
+
+	$: openStore.set(_open);
 </script>
 
-<button class="btn" on:click={() => (open = !open)}>{open ? "close" : "open"} modal</button>
-<dialog
-	on:cancel={(_) => (!closeOnEsc ? _.preventDefault() : null)}
-	on:close={() => (open = false)}
-	use:init={(modal, { open })}
-	class=" backdrop:bg-black/40 backdrop:backdrop-blur-sm bg-transparent h-full fixed max-h-full w-full max-w-full sm:justify-center open:flex items-end sm:items-center"
->
-	<div class={twMerge(`max-h-[90vh] max-w-${size} w-full bg- p-5 z-10 bg-white relative sm:rounded-lg rounded-t-lg `, _class)}>
-		<h3 class="font-bold text-lg">Hello!</h3>
-		<p class="py-4">Press ESC key or click the button below to close</p>
-	</div>
-	{#if closeOnOuterClick}
-		<form method="dialog">
-			<button class="fixed inset-0 z-0 !ring-0 !outline-none !border-0" />
-		</form>
+{#if $$slots.trigger}
+	<button {...$trigger} class={triggerClass} use:trigger>
+		<slot name="trigger" />
+	</button>
+{/if}
+
+<div {...$portalled} use:portalled>
+	{#if $open}
+		<div {...$overlay} use:overlay class="fixed z-50 inset-0 backdrop-blur-sm bg-black/30" />
+		<div
+			{...$content}
+			use:content
+			transition:fly={{
+				...{ ...(get(page).data.is_mobile ? { y: 350 } : drawer ? (placement === "right" ? { x: 350 } : { x: -350 }) : { y: -200 }) },
+				duration: 200,
+			}}
+			class={twMerge(
+				"fixed sm:p-4 w-full z-50 left-0 right-0",
+				placement === "left" && "sm:left-0 sm:right-auto",
+				placement === "right" && "sm:right-0 sm:left-auto",
+				placement === "top" && "sm:top-10",
+				placement === "center" && "sm:top-1/2 sm:-translate-y-1/2 sm:-translate-x-1/2 sm:left-1/2",
+				drawer ? `bottom-0 sm:top-0 ` : "max-h-[85vh] bottom-0 sm:bottom-auto  rounded-t-xl",
+				size === "xs" && "sm:max-w-xs",
+				size === "sm" && "sm:max-w-sm",
+				size === "md" && "sm:max-w-md",
+				size === "lg" && "sm:max-w-lg",
+				size === "xl" && "sm:max-w-xl"
+			)}
+		>
+			<div class={twMerge("w-full bg-white p-6 relative h-full shadow-xl flex flex-col overflow-auto text-start rounded-t-xl sm:rounded-xl", _class)}>
+				{#if closeButton}
+					<div class="absolute flex justify-end right-5 top-5">
+						<button {...$close} use:close class=" h-1.5 w-8 bg-gray-200 opacity-90 rounded-full top-6 ring-0 focus:ring-0 outline-none border-0" />
+					</div>
+				{/if}
+
+				<slot />
+			</div>
+		</div>
 	{/if}
-</dialog>
-<div class="hidden max-w-xs max-w-lg max-w-md max-w-xl max-w-2xl" />
+</div>
