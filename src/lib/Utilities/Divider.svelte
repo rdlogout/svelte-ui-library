@@ -14,8 +14,8 @@
 	<div class={twMerge("h-2 border-s w-[1px]", _class)} />
 {:else}
 	<div class={twMerge("flex items-center", containerClass)}>
-		<hr class={twMerge(`flex-grow border-t my-5 border-${color} border-${dashed ? "dashed" : "solid"}`, _class)} />
+		<hr class={twMerge(`flex-grow border-t my-5 border-gray-100 border-${dashed ? "dashed" : "solid"}`, _class)} />
 		<slot />
-		<hr class={twMerge(`flex-grow border-t my-5 border-${color} border-${dashed ? "dashed" : "solid"}`, _class)} />
+		<hr class={twMerge(`flex-grow border-t my-5 border-gray-100 border-${dashed ? "dashed" : "solid"}`, _class)} />
 	</div>
 {/if}

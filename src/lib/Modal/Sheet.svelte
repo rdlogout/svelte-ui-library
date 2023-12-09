@@ -20,21 +20,21 @@
 	let startY = 0;
 	let currentY = 0;
 	const touchStart = (e: TouchEvent) => {
+		e.stopPropagation();
 		startY = e.touches[0].clientY;
 		contentElement.classList.remove("transition-all");
 	};
 	const touchMove = (e: TouchEvent) => {
+		e.stopPropagation();
 		currentY = e.touches[0].clientY;
 		const translateY = Math.min(Math.max(currentY - startY, 0), window.innerHeight * 0.8);
 		contentElement.style.transform = `translateY(${translateY}px)`;
 	};
 	const touchEnd = (e: TouchEvent) => {
+		e.stopPropagation();
+		if (currentY - startY > 30) open = false;
 		contentElement.style.transform = "";
 		contentElement.classList.add("transition-all");
-
-		if (currentY - startY > window.innerHeight * 0.2) {
-			open = false;
-		}
 	};
 	if (queryKey)
 		pageSubscription = page.subscribe((value) => {
@@ -76,7 +76,9 @@
 	};
 </script>
 
-<button on:click={() => (open = !open)}>Open</button>
+{#if $$slots.trigger}
+	<slot name="trigger" trigger={() => (open = true)} />
+{/if}
 <!-- svelte-ignore a11y-click-events-have-key-events -->
 <!-- svelte-ignore a11y-no-static-element-interactions -->
 <div
@@ -94,7 +96,7 @@
 		on:touchend={touchEnd}
 		bind:this={contentElement}
 		class={twMerge(
-			"bg-white sm:rounded-3xl rounded-t-lg   min-w-full md:min-w-fit w-full transition-all sm:translate-y-0 translate-y-full flex flex-col shadow-[0_8px_30px_rgb(0,0,0,0.12)]",
+			"bg-white sm:rounded-b-md rounded-t-lg min-w-full md:min-w-fit w-full transition-all sm:translate-y-0 translate-y-full flex flex-col ",
 			size === "xs" && "sm:max-w-xs",
 			size === "sm" && "sm:max-w-sm",
 			size === "md" && "sm:max-w-md",
@@ -107,7 +109,7 @@
 		on:click|stopPropagation
 	>
 		<button class="mx-auto h-1 sm:h-1.5 w-8 mt-4 bg-gray-200 rounded-full" />
-		<h2 class:hidden={!title} class={twMerge("font-bold text-xl leading-none text-[#666] truncate text-center py-5 border-b border-gray-50 w-full", titleClass)}>{title}</h2>
+		<h2 class:hidden={!title} class={twMerge("font-extrabold  sm:text-xl text-lg leading-none text-[#555] truncate text-center py-5 border-b border-gray-50 w-full", titleClass)}>{title}</h2>
 		<div class={twMerge("flex-1 overflow-auto flex flex-col p-6", _class)}>
 			<slot />
 		</div>

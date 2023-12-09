@@ -1,6 +1,6 @@
 {
 	"name": "@logoutrd/svelte",
-	"version": "0.0.45",
+	"version": "0.0.62",
 	"scripts": {
 		"deploy": "npm run package && npm version patch -git-tag-version false && npm publish --access public",
 		"dev": "vite dev",
@@ -35,6 +35,7 @@
 		"autoprefixer": "^10.4.16",
 		"postcss": "^8.4.31",
 		"publint": "^0.1.9",
+		"sass": "^1.69.5",
 		"svelte": "^4.0.5",
 		"svelte-check": "^3.4.3",
 		"svelte-sequential-preprocessor": "^2.0.1",
