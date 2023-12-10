@@ -52,6 +52,7 @@
 	const containerAction = (node: HTMLElement, open: boolean) => {
 		return {
 			update(open: boolean) {
+				document.body.style.overflow = open ? "hidden" : "";
 				if (!open) {
 					onClose?.();
 					if (queryKey && $page.url.searchParams.has(queryKey)) {
@@ -59,6 +60,7 @@
 						goto($page.url.toString());
 					}
 				}
+
 				dispatchEvent(
 					new CustomEvent("sheetStateChanged", {
 						detail: {
@@ -96,7 +98,7 @@
 		on:touchend={touchEnd}
 		bind:this={contentElement}
 		class={twMerge(
-			"bg-white sm:rounded-b-md rounded-t-lg min-w-full md:min-w-fit w-full transition-all sm:translate-y-0 translate-y-full flex flex-col ",
+			"bg-white  sm:rounded-b-xl rounded-t-xl   w-full transition-all sm:translate-y-0 translate-y-full flex flex-col ",
 			size === "xs" && "sm:max-w-xs",
 			size === "sm" && "sm:max-w-sm",
 			size === "md" && "sm:max-w-md",

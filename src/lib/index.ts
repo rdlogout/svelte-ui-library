@@ -1,7 +1,9 @@
 export { default as Carousel } from "./Carousel/Carousel.svelte";
 export { default as Modal } from "./Modal/Modal.svelte";
 export { default as Drawer } from "./Modal/Drawer.svelte";
+
 export { default as Sheet } from "./Modal/Sheet.svelte";
+export { default as Dropdown } from "./Dropdown/Dropdown.svelte";
 
 //form
 export { default as Form } from "./Form/Form.svelte";
