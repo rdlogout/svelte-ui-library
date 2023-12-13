@@ -8,10 +8,13 @@
 	export { _class as class };
 	export let contentClass: string = "";
 	export let containerClass: string = "";
+	export let closeOnSelect: boolean = false;
 	let dropdownElement: HTMLElement;
 
 	const handleClickOutside = (e: any) => {
-		if (dropdownElement && !dropdownElement.contains(e.target)) {
+		if (!open) return;
+
+		if (dropdownElement && (!dropdownElement.contains(e.target) || closeOnSelect)) {
 			open = false;
 		}
 	};
@@ -23,7 +26,7 @@
 		data-trigger
 		aria-haspopup="true"
 		aria-expanded={open}
-		on:click={() => (open = !open)}
+		on:click|stopPropagation={() => (open = !open)}
 		id="dropdownButton"
 		type="button"
 		class={twMerge("inline-flex justify-center w-full !ring-0 border-0 text-base", variant === "outline" ? "border border-gray-200 rounded-lg px-4 py-2 gap-2" : "", _class)}

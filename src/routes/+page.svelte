@@ -15,8 +15,11 @@
 	<p>Create your package using @sveltejs/package and preview/showcase your work with SvelteKit</p>
 	<p>Visit <a href="https://kit.svelte.dev">kit.svelte.dev</a> to read the documentation</p>
 
-	<Sheet title="Update Location" queryKey="name">
+	<Sheet parent outerContainerClass="bg-red-100" title="Update Location" queryKey="name">
 		<button slot="trigger" let:trigger class="w-full sm:w-fit rounded-full px-5" on:click={trigger}> Open </button>
+		<Sheet outerContainerClass="bg-yellow-500 " title="Update Location" queryKey="name">
+			<button slot="trigger" let:trigger class="w-full sm:w-fit rounded-full px-5" on:click={trigger}> Open2 </button>
+		</Sheet>
 	</Sheet>
-	<Dropdown />
+	<Dropdown closeOnSelect>Ok</Dropdown>
 </div>
