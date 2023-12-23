@@ -12,3 +12,4 @@ export { default as PinInput } from "./Form/PinInput.svelte";
 export { default as SupabaseData } from "./Supabase/SupabaseData.svelte";
 //utilities
 export { default as Divider } from "./Utilities/Divider.svelte";
+export { default as Fetch } from "./Utilities/Fetch.svelte";

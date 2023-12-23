@@ -55,7 +55,7 @@
 		default: false,
 	};
 	export let oneAtTime: boolean = false;
-	export let autoHeight: boolean = true;
+	export let autoHeight: boolean = false;
 	export let autoPlay: number = 0;
 	export let pauseOnHover: boolean = false;
 	export let layout: ResponsiveProperty = {

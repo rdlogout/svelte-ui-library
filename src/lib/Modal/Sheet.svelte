@@ -1,8 +1,14 @@
 <script lang="ts">
 	import { goto } from "$app/navigation";
 	import { page } from "$app/stores";
+	import { getContext, onMount, setContext } from "svelte";
 	import { twMerge } from "tailwind-merge";
 	let nestedSheet = false;
+
+	let hasParentSheet = getContext("hasParentSheet");
+
+	if (!hasParentSheet) setContext("hasParentSheet", true);
+
 	export let type: "modal" | "drawer" = "drawer";
 	export let size: "xs" | "sm" | "md" | "lg" | "xl" = type === "drawer" ? "sm" : "md";
 	export let title: string = "";
@@ -15,6 +21,7 @@
 	export let queryKey: string = "";
 	export let open: boolean = false;
 	export let titleClass: string = "";
+	export let unmountOnClose: boolean = false;
 	let contentElement: HTMLElement;
 
 	export let onClose: () => void = () => {};
@@ -51,8 +58,11 @@
 			}
 		});
 
-	const containerAction = (node: HTMLElement, open: boolean) => {
-		const triggerChange = (value: boolean) => {
+	onMount(() => {
+		if (open) triggerChange(true);
+	});
+	const triggerChange = (value: boolean) => {
+		if (!hasParentSheet)
 			dispatchEvent(
 				new CustomEvent("sheetStateChanged", {
 					detail: {
@@ -60,10 +70,9 @@
 					},
 				})
 			);
-		};
+	};
 
-		if (open) triggerChange(true);
-
+	const containerAction = (node: HTMLElement, open: boolean) => {
 		return {
 			update(open: boolean) {
 				document.body.style.overflow = open ? "hidden" : "";
@@ -85,8 +94,8 @@
 	};
 
 	// on:touchstart={touchStart}
-	// 	on:touchmove={touchMove}
-	// 	on:touchend={touchEnd}
+	// on:touchmove={touchMove}
+	// on:touchend={touchEnd}
 </script>
 
 {#if $$slots.trigger}
@@ -107,7 +116,7 @@
 	<div
 		bind:this={contentElement}
 		class={twMerge(
-			"bg-white sm:max-h-fit max-h-[85vh] sm:rounded-b-xl transition-all rounded-t-xl w-full  flex flex-col ",
+			"bg-white sm:max-h-full max-h-[85vh] sm:rounded-b-xl transition-all rounded-t-xl w-full  flex flex-col ",
 			// nestedSheet ? "transition-all sm:translate-y-0 translate-y-full" : "",
 			size === "xs" && "sm:max-w-xs",
 			size === "sm" && "sm:max-w-sm",
@@ -125,7 +134,9 @@
 		{/if}
 		<h2 class:hidden={!title} class={twMerge("font-extrabold  sm:text-xl text-lg leading-none text-[#555] truncate text-center py-5 border-b border-gray-50 w-full", titleClass)}>{title}</h2>
 		<div class={twMerge("flex-1 overflow-auto flex flex-col p-6", _class)}>
-			<slot />
+			{#if !unmountOnClose || open}
+				<slot />
+			{/if}
 		</div>
 	</div>
 </div>
