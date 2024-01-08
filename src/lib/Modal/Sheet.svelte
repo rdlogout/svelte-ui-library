@@ -68,7 +68,7 @@
 					detail: {
 						open: value,
 					},
-				})
+				}),
 			);
 	};
 
@@ -109,8 +109,8 @@
 	class={twMerge(
 		"fixed inset-0 max-h-screen  flex bg-black/30 w-full backdrop-blur-sm z-50 transition-all duration-300 sm:p-4 items-end",
 		type === "drawer" ? "sm:justify-end" : "sm:justify-center sm:items-center",
-		open ? "visible opacity-100" : "invisible opacity-0",
-		outerContainerClass
+		open ? "visible opacity-100" : "invisible opacity-0 pointer-events-none",
+		outerContainerClass,
 	)}
 >
 	<div
@@ -125,7 +125,7 @@
 			size === "xl" && "sm:max-w-xl",
 			type === "drawer" ? `sm:h-full ${nestedSheet ? "transform sm:translate-x-full" : ""}` : "h-fit",
 			// open && nestedSheet ? "sm:translate-x-0  translate-y-0" : "",
-			containerClass
+			containerClass,
 		)}
 		on:click|stopPropagation
 	>
